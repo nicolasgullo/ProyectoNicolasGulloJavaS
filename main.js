@@ -72,3 +72,5 @@ while (bandera){
 
     bandera = !confirm("Esta seguro?")
 }
+
+alert("Gracias por su compra!")
