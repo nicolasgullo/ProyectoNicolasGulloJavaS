@@ -1,76 +1,80 @@
-let productos = ["Mouse", "Teclado", "Auriculares"]
-let carrito = []
-let total_compra = 0
-let cargo_adicional = 0
-let total_con_adicional = 0
+const productos = document.getElementById("productos")
+const carrito = document.getElementById("carrito")
+const Carrito = JSON.parse(localStorage.getItem("contenido-carrito")) || []
 
-alert("BIENVENIDO A COMPRA-TECNO")
+const Productos = [
+    {
+        imagen: "./img/Productos/auriculares.png",
+        titulo: "Auriculares GN",
+        precio: 30000,
+    },
+    {
+        imagen: "./img/Productos/mousepad.png",
+        titulo: "Mousepad GN",
+        precio: 5000,
+    },
+    {
+        imagen: "./img/Productos/mouse.png",
+        titulo: "Mouse GN",
+        precio: 10000,
+    } 
+]
 
-function seleccionCompra(producto){
-    if (producto == "MOUSE"){
-        cantidad = parseInt(prompt("Cuantos " + producto + " desea comprar?"))
-        carrito.push(producto + " | Cantidad =  " + cantidad)
-        total_compra += cantidad * 5000
-    } else if (producto == "TECLADO"){
-        cantidad = parseInt(prompt("Cuantos " + producto + " desea comprar?"))
-        carrito.push(producto + " | Cantidad =  " + cantidad)
-        total_compra += cantidad * 10000
-    } else if (producto == "AURICULARES"){
-        cantidad = parseInt(prompt("Cuantos " + producto + " desea comprar?"))
-        carrito.push(producto + " | Cantidad =  " + cantidad)
-        total_compra += cantidad * 15000
+const actualizarCarrito = () => {
+    localStorage.setItem("contenido-carrito", JSON.stringify(Carrito));
+}
+
+const agregarAlCarrito = (titulo, precio) => {
+    const bandera = Carrito.some(el => {
+        return el.titulo === titulo
+    })
+    if(bandera){
+        const producto = Carrito.find(el => {
+            return el.titulo === titulo
+        })
+        producto.cantidad += 1
     }else{
-        alert("Disculpe, no tenemos ese producto")
-    }
+        Carrito.push({
+            titulo,
+            precio,
+            cantidad: 1
+        })
+    }   
+    actualizarCarrito()
 }
 
-function seleccionPago(metodo){
-    switch(metodo){
-        case "efectivo":
-            alert("Monto total de la compra: \n\n" + "- $" + total_compra)
-            break
-        case "tarjeta":
-            sumaAdicional(15)
-            alert("Monto total de la compra: \n\n" + "- $" + total_compra + " + " + cargo_adicional + "\n- Total= $" + total_con_adicional)
-            break
-        case "mercado pago":
-            total_compra = total_compra * 1.10
-            sumaAdicional(10)
-            alert("Monto total de la compra: \n\n" + "- $" + total_compra + " + " + cargo_adicional + "\n- Total= $" + total_con_adicional)
-            break
-        default:
-            alert("Por favor, ingrese un metodo de pago valido.")
-    }
-}
+const cargarProductos = (imagen, titulo, precio) => {
+    const contenedor = document.createElement("div")
+    const imagenDOM = document.createElement("img")
+    const tituloDOM = document.createElement("h3")
+    const precioDOM = document.createElement("p")
+    const botonDOM = document.createElement("button")
 
-function sumaAdicional(porcentaje){
-    cargo_adicional = total_compra * porcentaje/100
-    total_con_adicional = total_compra + cargo_adicional
-}
+    contenedor.classList.add("contenedor")
+    imagenDOM.classList.add("imagen")
+    tituloDOM.classList.add("titulo")
+    precioDOM.classList.add("precio")
+    botonDOM.classList.add("boton-agregar")
 
-let bandera = true
-
-while (bandera){
-    const compra = prompt("Que desea comprar? \n\n" + " - " + productos.join("\n - ")).toUpperCase()
+    imagenDOM.src = imagen
+    tituloDOM.innerText = titulo
+    precioDOM.innerText = "$" + precio
+    botonDOM.innerText  = "Agregar al carrito"
     
-    seleccionCompra(compra)
+    botonDOM.addEventListener("click", ()=>{
+        agregarAlCarrito(titulo, precio)
+    })
 
-    bandera = confirm("Desea realizar otra compra?\n\n Total de su compra: $ " + total_compra)
+    contenedor.appendChild(imagenDOM)
+    contenedor.appendChild(tituloDOM)
+    contenedor.appendChild(precioDOM)
+    contenedor.appendChild(botonDOM)
+
+    return contenedor
 }
 
-alert("Carrito:\n\n" + " - " +carrito.join("\n - "))
+Productos.forEach(el => {
+    const productoDOM = cargarProductos(el.imagen, el.titulo, el.precio)
 
-let forma_pagos = ["Efectivo (S/cargo adicional)", "Tarjeta (15% cargo adicional)", "Mercado Pago (10% cargo adicional)"]
-
-bandera = true
-
-while (bandera){
-    
-    let metodo_pago = prompt("Elija el motodo de pago: \n\n" + " - " + forma_pagos.join("\n - ")).toLowerCase()
-    
-    seleccionPago(metodo_pago)
-
-    bandera = !confirm("Esta seguro?")
-}
-
-alert("Gracias por su compra!")
+    productos.appendChild(productoDOM)
+})
