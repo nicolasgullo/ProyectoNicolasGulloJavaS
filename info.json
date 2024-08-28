@@ -1,0 +1,17 @@
+[
+    {
+        "imagen": "./img/Productos/auriculares.png",
+        "titulo": "Auriculares GN",
+        "precio": 30000
+    },
+    {
+        "imagen": "./img/Productos/mousepad.png",
+        "titulo": "Mousepad GN",
+        "precio": 5000
+    },
+    {
+        "imagen": "./img/Productos/mouse.png",
+        "titulo": "Mouse GN",
+        "precio": 10000
+    }
+]

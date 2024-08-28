@@ -264,3 +264,14 @@ section{
     color: rgb(246, 45, 78);
     background-color:white;
 }
+
+.alerta{
+    display: flex;
+    align-items: center;
+}
+
+.alerta img {
+    width: 3em;
+    height: 3em;
+    margin-right: 10px;
+}

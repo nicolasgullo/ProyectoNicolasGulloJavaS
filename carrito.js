@@ -15,7 +15,47 @@ const actualizarCarrito = () => {
     calcularTotal(Carrito)
 }
 
-const eliminarProducto = (titulo) => {
+// me gustaria saber si esto esta bien:
+function limpiarCarrito() {
+    if(Carrito.length > 0){
+        localStorage.clear();
+        carrito.innerHTML = "";
+        Swal.fire({
+            title: "GRACIAS POR SU COMPRA!",
+            imageUrl: "https://media.tenor.com/N6gCpoDF6KgAAAAM/pikachu-love.gif"
+        });
+    }else{
+        Swal.fire({
+            icon: "error",
+            title: "Su carrito esta vacio",
+            toast: true,
+            position: "center",
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+}
+// en especial esta parte (si llame bien al boton o deberia haberlo hecho de otra manera):
+const boton = document.getElementById("boton-limpiar");
+boton.addEventListener("click", limpiarCarrito);
+//
+
+const alertaArticuloEliminado = (titulo) => {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        timerProgressBar: true,
+        timer: 2000,
+        showConfirmButton: false,
+        icon: "error",
+        color: "#000000",
+        background: "rgba(255, 255, 255, 0.8)",
+        title: "Eliminaste un articulo:",
+        text: titulo
+})
+}
+
+const eliminarProducto = (titulo, imagen) => {
     const producto = Carrito.find(el => {
         return el.titulo === titulo
     })
@@ -30,6 +70,7 @@ const eliminarProducto = (titulo) => {
     }
 
     actualizarCarrito()
+    alertaArticuloEliminado(titulo)
 }
 
 const cargarCarrito = (titulo, precio, cantidad) => {

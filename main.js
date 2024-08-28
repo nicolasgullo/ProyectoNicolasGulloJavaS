@@ -2,29 +2,33 @@ const productos = document.getElementById("productos")
 const carrito = document.getElementById("carrito")
 const Carrito = JSON.parse(localStorage.getItem("contenido-carrito")) || []
 
-const Productos = [
-    {
-        imagen: "./img/Productos/auriculares.png",
-        titulo: "Auriculares GN",
-        precio: 30000,
-    },
-    {
-        imagen: "./img/Productos/mousepad.png",
-        titulo: "Mousepad GN",
-        precio: 5000,
-    },
-    {
-        imagen: "./img/Productos/mouse.png",
-        titulo: "Mouse GN",
-        precio: 10000,
-    } 
-]
-
 const actualizarCarrito = () => {
     localStorage.setItem("contenido-carrito", JSON.stringify(Carrito));
 }
 
-const agregarAlCarrito = (titulo, precio) => {
+const alertaArticuloAgregado = (titulo, imagen) => {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        timerProgressBar: true,
+        timer: 2000,
+        showConfirmButton: false,
+        icon: "success",
+        color: "#000000",
+        background: "rgba(255, 255, 255, 0.8)",
+        html: `
+            <div class="alerta">
+                <img src="${imagen}" alt="Imagen del artículo">
+                <div>
+                    <strong>Agregaste un artículo:</strong><br>
+                    ${titulo}
+                </div>
+            </div>
+        `,
+    });
+}
+
+const agregarAlCarrito = (titulo, precio, imagen) => {
     const bandera = Carrito.some(el => {
         return el.titulo === titulo
     })
@@ -41,6 +45,7 @@ const agregarAlCarrito = (titulo, precio) => {
         })
     }   
     actualizarCarrito()
+    alertaArticuloAgregado(titulo, imagen)
 }
 
 const cargarProductos = (imagen, titulo, precio) => {
@@ -62,7 +67,7 @@ const cargarProductos = (imagen, titulo, precio) => {
     botonDOM.innerText  = "Agregar al carrito"
     
     botonDOM.addEventListener("click", ()=>{
-        agregarAlCarrito(titulo, precio)
+        agregarAlCarrito(titulo, precio, imagen)
     })
 
     contenedor.appendChild(imagenDOM)
@@ -73,8 +78,15 @@ const cargarProductos = (imagen, titulo, precio) => {
     return contenedor
 }
 
-Productos.forEach(el => {
-    const productoDOM = cargarProductos(el.imagen, el.titulo, el.precio)
+const traerProductos = async () => {
+    let resp = await fetch("./info.json")
+    let data = await resp.json()
 
-    productos.appendChild(productoDOM)
-})
+    data.forEach(el => {
+        const productoDOM = cargarProductos(el.imagen, el.titulo, el.precio)
+    
+        productos.appendChild(productoDOM)
+    })
+} 
+
+traerProductos()
